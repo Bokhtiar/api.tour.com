@@ -12,8 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.register = exports.login = void 0;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-// import { adminAuthService } from "../../services/admin/adminAuthService";
-// import { IAdminCreateOrUpdate } from "../../types/admin/admin.type";
+const admin_services_1 = require("../../services/admin/admin.services");
 /* login as a admin */
 const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     // try {
@@ -62,45 +61,42 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
 exports.login = login;
 /* register as a admin */
 const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    // try {
-    //     const { name, email, phone, password, role } = req.body;
-    //     /* check exist email */
-    //     const is_emailExist = await adminAuthService.findOneByKey({ email: email });
-    //     if (is_emailExist) {
-    //         return res.status(409).json({
-    //             status: false,
-    //             message: "Email already exist.",
-    //         });
-    //     }
-    //     /* check exist phone */
-    //     const is_phoneExist = await adminAuthService.findOneByKey({ phone: phone });
-    //     if (is_phoneExist) {
-    //         return res.status(409).json({
-    //             status: true,
-    //             message: "Phone already exist.",
-    //         });
-    //     }
-    //     /* Has password  */
-    //     const hashPassword = await bcrypt.hash(password, 10);
-    //     const documents: IAdminCreateOrUpdate = {
-    //         name,
-    //         email,
-    //         phone,
-    //         password: hashPassword,
-    //         role,
-    //     };
-    //     await adminAuthService.registration({ documents: { ...documents } });
-    //     res.status(201).json({
-    //         status: true,
-    //         message: "Admin Created.",
-    //     });
-    // } catch (error: any) {
-    //     console.log(error);
-    //     next(error);
-    // }
-    res.status(200).json({
-        status: true,
-        data: "register",
-    });
+    try {
+        const { name, email, phone, password, role } = req.body;
+        /* check exist email */
+        const is_emailExist = yield admin_services_1.adminAuthService.findOneByKey({ email: email });
+        if (is_emailExist) {
+            return res.status(409).json({
+                status: false,
+                message: "Email already exist.",
+            });
+        }
+        /* check exist phone */
+        const is_phoneExist = yield admin_services_1.adminAuthService.findOneByKey({ phone: phone });
+        if (is_phoneExist) {
+            return res.status(409).json({
+                status: true,
+                message: "Phone already exist.",
+            });
+        }
+        /* Has password  */
+        const hashPassword = yield bcrypt.hash(password, 10);
+        const documents = {
+            name,
+            email,
+            phone,
+            password: hashPassword,
+            role,
+        };
+        yield admin_services_1.adminAuthService.registration({ documents: Object.assign({}, documents) });
+        res.status(201).json({
+            status: true,
+            message: "Admin Created.",
+        });
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
 });
 exports.register = register;

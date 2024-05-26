@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 
-export interface IAuth {
+export interface IAdmin {
   _id: Types.ObjectId;
   name: string;
   email: string;
@@ -9,7 +9,7 @@ export interface IAuth {
   role: string;
 }
 
-export interface IAuthCreateOrUpdate {
+export interface IAdminCreateOrUpdate {
   name: string;
   email: string;
   phone: number;

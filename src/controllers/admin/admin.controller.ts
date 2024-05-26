@@ -1,8 +1,8 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 import { Request, Response, NextFunction } from "express";
-// import { adminAuthService } from "../../services/admin/adminAuthService";
-// import { IAdminCreateOrUpdate } from "../../types/admin/admin.type";
+import { adminAuthService } from "../../services/admin/admin.services";
+import {IAdmin, IAdminCreateOrUpdate} from '../../types/admin/admin.types'
 
 /* login as a admin */
 export const login = async (
@@ -65,51 +65,46 @@ export const register = async (
     res: Response,
     next: NextFunction
 ) => {
-    // try {
-    //     const { name, email, phone, password, role } = req.body;
+    try {
+        const { name, email, phone, password, role } = req.body;
 
-    //     /* check exist email */
-    //     const is_emailExist = await adminAuthService.findOneByKey({ email: email });
-    //     if (is_emailExist) {
-    //         return res.status(409).json({
-    //             status: false,
-    //             message: "Email already exist.",
-    //         });
-    //     }
+        /* check exist email */
+        const is_emailExist = await adminAuthService.findOneByKey({ email: email });
+        if (is_emailExist) {
+            return res.status(409).json({
+                status: false,
+                message: "Email already exist.",
+            });
+        }
 
-    //     /* check exist phone */
-    //     const is_phoneExist = await adminAuthService.findOneByKey({ phone: phone });
-    //     if (is_phoneExist) {
-    //         return res.status(409).json({
-    //             status: true,
-    //             message: "Phone already exist.",
-    //         });
-    //     }
+        /* check exist phone */
+        const is_phoneExist = await adminAuthService.findOneByKey({ phone: phone });
+        if (is_phoneExist) {
+            return res.status(409).json({
+                status: true,
+                message: "Phone already exist.",
+            });
+        }
 
-    //     /* Has password  */
-    //     const hashPassword = await bcrypt.hash(password, 10);
+        /* Has password  */
+        const hashPassword = await bcrypt.hash(password, 10);
 
-    //     const documents: IAdminCreateOrUpdate = {
-    //         name,
-    //         email,
-    //         phone,
-    //         password: hashPassword,
-    //         role,
-    //     };
+        const documents: IAdminCreateOrUpdate = {
+            name,
+            email,
+            phone,
+            password: hashPassword,
+            role,
+        };
 
-    //     await adminAuthService.registration({ documents: { ...documents } });
+        await adminAuthService.registration({ documents: { ...documents } });
 
-    //     res.status(201).json({
-    //         status: true,
-    //         message: "Admin Created.",
-    //     });
-    // } catch (error: any) {
-    //     console.log(error);
-    //     next(error);
-    // }
-
-    res.status(200).json({
-      status: true,
-      data: "register",
-    });
+        res.status(201).json({
+            status: true,
+            message: "Admin Created.",
+        });
+    } catch (error: any) {
+        console.log(error);
+        next(error);
+    }
 };

@@ -23,7 +23,7 @@ app.use("/api/v1", AppRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
-});
+}); 
 
 app.listen(port, () => {
   //mqCategoryConsumer();
