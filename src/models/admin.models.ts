@@ -11,7 +11,7 @@ const adminSchema: Schema = new Schema<IAdminCreateOrUpdate>(
     email: {
       type: String,
       trim: true,
-      required: true,
+      required: true, 
     },
     phone: {
       type: Number,
