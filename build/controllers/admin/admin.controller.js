@@ -15,48 +15,41 @@ const jwt = require("jsonwebtoken");
 const admin_services_1 = require("../../services/admin/admin.services");
 /* login as a admin */
 const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    // try {
-    //     const { email, password } = req.body;
-    //     /* check account is exists  */
-    //     const account = await adminAuthService.findOneByKey({ email: email });
-    //     if (!account) {
-    //         return res.status(404).json({
-    //             status: false,
-    //             message: "Invalid email or password.",
-    //         });
-    //     }
-    //     /* compare with password */
-    //     const result = await bcrypt.compare(password, account?.password);
-    //     if (!result) {
-    //         return res.status(404).json({
-    //             status: false,
-    //             message: "Invalid email or password.",
-    //         });
-    //     }
-    //     /* Generate JWT token */
-    //     const token = await jwt.sign(
-    //         {
-    //             id: account?._id,
-    //             name: account?.name,
-    //             role: account?.role,
-    //         },
-    //         process.env.JWT_SECRET,
-    //         { expiresIn: "1d" }
-    //     );
-    //     res.status(200).json({
-    //         status: true,
-    //         token: token,
-    //     });
-    // } catch (error: any) {
-    //     if (error) {
-    //         console.log(error);
-    //         next(error);
-    //     }
-    // }
-    res.status(200).json({
-        status: true,
-        data: "login",
-    });
+    try {
+        const { email, password } = req.body;
+        /* check account is exists  */
+        const account = yield admin_services_1.adminAuthService.findOneByKey({ email: email });
+        if (!account) {
+            return res.status(404).json({
+                status: false,
+                message: "Invalid email or password.",
+            });
+        }
+        /* compare with password */
+        const result = yield bcrypt.compare(password, account === null || account === void 0 ? void 0 : account.password);
+        if (!result) {
+            return res.status(404).json({
+                status: false,
+                message: "Invalid email or password.",
+            });
+        }
+        /* Generate JWT token */
+        const token = yield jwt.sign({
+            id: account === null || account === void 0 ? void 0 : account._id,
+            name: account === null || account === void 0 ? void 0 : account.name,
+            role: account === null || account === void 0 ? void 0 : account.role,
+        }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        res.status(200).json({
+            status: true,
+            token: token,
+        });
+    }
+    catch (error) {
+        if (error) {
+            console.log(error);
+            next(error);
+        }
+    }
 });
 exports.login = login;
 /* register as a admin */

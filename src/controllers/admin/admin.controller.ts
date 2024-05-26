@@ -10,53 +10,48 @@ export const login = async (
     res: Response,
     next: NextFunction
 ) => {
-    // try {
-    //     const { email, password } = req.body;
+    try {
+        const { email, password } = req.body;
 
-    //     /* check account is exists  */
-    //     const account = await adminAuthService.findOneByKey({ email: email });
-    //     if (!account) {
-    //         return res.status(404).json({
-    //             status: false,
-    //             message: "Invalid email or password.",
-    //         });
-    //     }
+        /* check account is exists  */
+        const account = await adminAuthService.findOneByKey({ email: email });
+        if (!account) {
+            return res.status(404).json({
+                status: false,
+                message: "Invalid email or password.",
+            });
+        }
 
-    //     /* compare with password */
-    //     const result = await bcrypt.compare(password, account?.password);
-    //     if (!result) {
-    //         return res.status(404).json({
-    //             status: false,
-    //             message: "Invalid email or password.",
-    //         });
-    //     }
+        /* compare with password */
+        const result = await bcrypt.compare(password, account?.password);
+        if (!result) {
+            return res.status(404).json({
+                status: false,
+                message: "Invalid email or password.",
+            });
+        }
 
-    //     /* Generate JWT token */
-    //     const token = await jwt.sign(
-    //         {
-    //             id: account?._id,
-    //             name: account?.name,
-    //             role: account?.role,
-    //         },
-    //         process.env.JWT_SECRET,
-    //         { expiresIn: "1d" }
-    //     );
+        /* Generate JWT token */
+        const token = await jwt.sign(
+            {
+                id: account?._id,
+                name: account?.name,
+                role: account?.role,
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+        );
 
-    //     res.status(200).json({
-    //         status: true,
-    //         token: token,
-    //     });
-    // } catch (error: any) {
-    //     if (error) {
-    //         console.log(error);
-    //         next(error);
-    //     }
-    // }
-
-     res.status(200).json({
+        res.status(200).json({
             status: true,
-            data: "login",
+            token: token,
         });
+    } catch (error: any) {
+        if (error) {
+            console.log(error);
+            next(error);
+        }
+    }
 };
 
 /* register as a admin */
