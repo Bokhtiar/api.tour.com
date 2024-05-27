@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CategoryServices = void 0;
 const category_models_1 = require("../../models/category.models");
 /** count documents */
 const countAll = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -23,25 +24,46 @@ const findAll = ({ limit, page, }) => __awaiter(void 0, void 0, void 0, function
         .exec();
 });
 /** find one key */
-const findOne = ({ params, }) => __awaiter(void 0, void 0, void 0, function* () {
+const findOneByKey = (params) => __awaiter(void 0, void 0, void 0, function* () {
     return yield category_models_1.Category.findOne(Object.assign({}, params));
 });
+/** find by id */
+const findById = ({ _id, }) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield category_models_1.Category.findById(_id);
+});
 /** create new resource */
-const createResource = ({ documents }) => __awaiter(void 0, void 0, void 0, function* () {
+const createResource = ({ documents, }) => __awaiter(void 0, void 0, void 0, function* () {
     const newCategory = new category_models_1.Category({
         name: documents === null || documents === void 0 ? void 0 : documents.name,
-        logo: documents === null || documents === void 0 ? void 0 : documents.logo
+        logo: documents === null || documents === void 0 ? void 0 : documents.logo,
     });
     return yield newCategory.save();
 });
 /** resource update */
-const updateResource = ({ _id, documents }) => __awaiter(void 0, void 0, void 0, function* () {
+const updateResource = ({ _id, documents, }) => __awaiter(void 0, void 0, void 0, function* () {
     return yield category_models_1.Category.findByIdAndUpdate(_id, {
         name: documents === null || documents === void 0 ? void 0 : documents.name,
-        logo: documents === null || documents === void 0 ? void 0 : documents.logo
+        logo: documents === null || documents === void 0 ? void 0 : documents.logo,
     });
 });
 /** resource delete */
-const resourceDestory = ({ _id }) => __awaiter(void 0, void 0, void 0, function* () {
+const destoryResource = ({ _id }) => __awaiter(void 0, void 0, void 0, function* () {
     return yield category_models_1.Category.findByIdAndRemove(_id);
 });
+/* Search by key */
+const searchByKey = ({ query, }) => __awaiter(void 0, void 0, void 0, function* () {
+    const queryRegExp = new RegExp(query, "i");
+    return yield category_models_1.Category.find({
+        $or: [{ name: queryRegExp }],
+    });
+});
+exports.CategoryServices = {
+    findAll,
+    countAll,
+    findById,
+    searchByKey,
+    findOneByKey,
+    createResource,
+    updateResource,
+    destoryResource,
+};
