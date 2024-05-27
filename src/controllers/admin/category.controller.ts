@@ -102,3 +102,67 @@ export const show = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+/** update resource */
+export const update = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const { name, logo } = req.body;
+    const documents: ICategoryCreateUpdate = {
+      name,
+      logo,
+    };
+
+    /* check unique name */
+    const existWithName = await CategoryServices.findOneByKey({ name });
+    if (existWithName && existWithName._id.toString() !== id) {
+      return res.status(409).json(
+        await HttpErrorResponse({
+          status: false,
+          errors: [
+            {
+              field: "Name",
+              message: "Category name already exists.",
+            },
+          ],
+        })
+      );
+    }
+
+    const data = await CategoryServices.updateResource({
+      _id: new Types.ObjectId(id),
+      documents: documents,
+    });
+
+    res.status(200).json(
+      await HttpSuccessResponse({
+        status: true,
+        data: data,
+        message: "Category updated",
+      })
+    );
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+/** resource desotry */
+export const desotry = async(req: Request, res: Response, next: NextFunction) => {
+  try {
+    const {id} = req.params
+    const data = await CategoryServices.destoryResource({_id: new Types.ObjectId(id)})
+    res.status(200).json(
+      await HttpSuccessResponse({
+        status: true,
+        data: data,
+        message: "Category deleted",
+      })
+    );
+  } catch (error:any) {
+    next(error)
+  }
+}
