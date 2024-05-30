@@ -19,8 +19,9 @@ adminCategoryRoute.post(
   CategoryController.store
 );
 
-// adminCategoryRoute.post("/", upload.single("logo"), (req : Request, res: Response) => {
-//   console.log("Image buffer:", req.file?.buffer);
-// });
-
-adminCategoryRoute.put("/:id", adminCategoryValidators.createUpdate, CategoryController.update)
+adminCategoryRoute.put(
+  "/:id",
+  upload.single("logo"),
+  adminCategoryValidators.createUpdate,
+  CategoryController.update
+);

@@ -38,7 +38,4 @@ exports.adminCategoryRoute.get('/', CategoryController.index);
 exports.adminCategoryRoute.get("/:id", CategoryController.show);
 exports.adminCategoryRoute.delete("/:id", CategoryController.desotry);
 exports.adminCategoryRoute.post("/", upload.single("logo"), category_validators_1.adminCategoryValidators.createUpdate, CategoryController.store);
-// adminCategoryRoute.post("/", upload.single("logo"), (req : Request, res: Response) => {
-//   console.log("Image buffer:", req.file?.buffer);
-// });
-exports.adminCategoryRoute.put("/:id", category_validators_1.adminCategoryValidators.createUpdate, CategoryController.update);
+exports.adminCategoryRoute.put("/:id", upload.single("logo"), category_validators_1.adminCategoryValidators.createUpdate, CategoryController.update);
