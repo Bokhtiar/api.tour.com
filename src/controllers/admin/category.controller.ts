@@ -8,6 +8,14 @@ import { paginate, paginateQueryParams } from "../../helpers/pagination.helper";
 import { ICategoryCreateUpdate } from "../../types/admin/category.types";
 import { Types } from "mongoose";
 
+import fs from "fs";
+import path from "path";
+import sharp from "sharp";
+import { Category, ICategory } from "../../models/category.models";
+const imagesDir = path.join(__dirname, "../../public/uploads"); 
+
+
+
 /** list of resource */
 export const index = async (
   req: Request,
@@ -47,40 +55,39 @@ export const store = async (
   next: NextFunction
 ) => {
   try {
-    const { name, logo } = req.body;
-    const documents: ICategoryCreateUpdate = {
-      name,
-      logo,
-    };
-
-    /** check exist name */
-    const isExistName = await CategoryServices.findOneByKey({ name: name });
-    if (isExistName) {
-      return res.status(404).json(
-        await HttpErrorResponse({
-          status: false,
-          errors: [
-            {
-              field: "name",
-              message: "Category name already exsit",
-            },
-          ],
-        })
-      );
+    if (!req.file) {
+      return res.status(400).send("No file uploaded.");
     }
 
-    const data = await CategoryServices.createResource({
-      documents: documents,
-    });
+    const { name } = req.body;
+    const imageBuffer = req.file.buffer;
+    
+    // Resize the image
+    const resizedImageBuffer = await sharp(imageBuffer)
+      .resize(500, 500)
+      .jpeg({ quality: 80 })
+      .toBuffer();
 
-    res.status(201).json(
+    const filename = `${Date.now()}.jpg`;
+    const outputPath = path.join(imagesDir, filename);
+    fs.writeFileSync(outputPath, resizedImageBuffer);
+
+     const documents: ICategoryCreateUpdate = {
+       name,
+       logo:filename,
+     };
+
+     const data = await CategoryServices.createResource({
+       documents: documents,
+     });
+
+    res.status(200).json(
       await HttpSuccessResponse({
         status: true,
-        message: "Category created.",
         data: data,
       })
     );
-  } catch (error: any) {
+  } catch (error) {
     next(error);
   }
 };
@@ -151,10 +158,16 @@ export const update = async (
 };
 
 /** resource desotry */
-export const desotry = async(req: Request, res: Response, next: NextFunction) => {
+export const desotry = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const {id} = req.params
-    const data = await CategoryServices.destoryResource({_id: new Types.ObjectId(id)})
+    const { id } = req.params;
+    const data = await CategoryServices.destoryResource({
+      _id: new Types.ObjectId(id),
+    });
     res.status(200).json(
       await HttpSuccessResponse({
         status: true,
@@ -162,7 +175,7 @@ export const desotry = async(req: Request, res: Response, next: NextFunction) =>
         message: "Category deleted",
       })
     );
-  } catch (error:any) {
-    next(error)
+  } catch (error: any) {
+    next(error);
   }
-}
+};

@@ -10,7 +10,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryServices = void 0;
+const express = require("express");
+const path = require("path");
+const multer = require("multer");
 const category_models_1 = require("../../models/category.models");
+/** create new resource */
+const createResource = ({ documents, }) => __awaiter(void 0, void 0, void 0, function* () {
+    const newCategory = new category_models_1.Category({
+        name: documents === null || documents === void 0 ? void 0 : documents.name,
+        logo: documents === null || documents === void 0 ? void 0 : documents.logo
+    });
+    return yield newCategory.save();
+});
 /** count documents */
 const countAll = () => __awaiter(void 0, void 0, void 0, function* () {
     return yield category_models_1.Category.countDocuments();
@@ -30,14 +41,6 @@ const findOneByKey = (params) => __awaiter(void 0, void 0, void 0, function* () 
 /** find by id */
 const findById = ({ _id, }) => __awaiter(void 0, void 0, void 0, function* () {
     return yield category_models_1.Category.findById(_id);
-});
-/** create new resource */
-const createResource = ({ documents, }) => __awaiter(void 0, void 0, void 0, function* () {
-    const newCategory = new category_models_1.Category({
-        name: documents === null || documents === void 0 ? void 0 : documents.name,
-        logo: documents === null || documents === void 0 ? void 0 : documents.logo,
-    });
-    return yield newCategory.save();
 });
 /** resource update */
 const updateResource = ({ _id, documents, }) => __awaiter(void 0, void 0, void 0, function* () {

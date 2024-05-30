@@ -19,18 +19,20 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use("/api/v1", AppRouter);
+/** image upload */
+app.use(express.json());
+app.use("/images", express.static("public/uploads"));
 
+app.use("/api/v1", AppRouter);
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
-});  
+}); 
 
 app.listen(port, () => {
-  //mqCategoryConsumer();
   console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
 });
 
-// DB Connection here
+/** DB Connection here */
 mongoose
   .connect(`${process.env.DB_URL}`)
   .then(() => console.log("Database connected"))

@@ -8,12 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.desotry = exports.update = exports.show = exports.store = exports.index = void 0;
 const index_helper_1 = require("../../helpers/index.helper");
 const category_services_1 = require("../../services/admin/category.services");
 const pagination_helper_1 = require("../../helpers/pagination.helper");
 const mongoose_1 = require("mongoose");
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+const sharp_1 = __importDefault(require("sharp"));
+const imagesDir = path_1.default.join(__dirname, "../../public/uploads");
 /** list of resource */
 const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -43,30 +50,28 @@ exports.index = index;
 /** create new resoruce */
 const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, logo } = req.body;
+        if (!req.file) {
+            return res.status(400).send("No file uploaded.");
+        }
+        const { name } = req.body;
+        const imageBuffer = req.file.buffer;
+        // Resize the image
+        const resizedImageBuffer = yield (0, sharp_1.default)(imageBuffer)
+            .resize(500, 500)
+            .jpeg({ quality: 80 })
+            .toBuffer();
+        const filename = `${Date.now()}.jpg`;
+        const outputPath = path_1.default.join(imagesDir, filename);
+        fs_1.default.writeFileSync(outputPath, resizedImageBuffer);
         const documents = {
             name,
-            logo,
+            logo: filename,
         };
-        /** check exist name */
-        const isExistName = yield category_services_1.CategoryServices.findOneByKey({ name: name });
-        if (isExistName) {
-            return res.status(404).json(yield (0, index_helper_1.HttpErrorResponse)({
-                status: false,
-                errors: [
-                    {
-                        field: "name",
-                        message: "Category name already exsit",
-                    },
-                ],
-            }));
-        }
         const data = yield category_services_1.CategoryServices.createResource({
             documents: documents,
         });
-        res.status(201).json(yield (0, index_helper_1.HttpSuccessResponse)({
+        res.status(200).json(yield (0, index_helper_1.HttpSuccessResponse)({
             status: true,
-            message: "Category created.",
             data: data,
         }));
     }
@@ -133,7 +138,9 @@ exports.update = update;
 const desotry = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const data = yield category_services_1.CategoryServices.destoryResource({ _id: new mongoose_1.Types.ObjectId(id) });
+        const data = yield category_services_1.CategoryServices.destoryResource({
+            _id: new mongoose_1.Types.ObjectId(id),
+        });
         res.status(200).json(yield (0, index_helper_1.HttpSuccessResponse)({
             status: true,
             data: data,

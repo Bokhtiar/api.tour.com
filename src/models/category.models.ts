@@ -1,22 +1,13 @@
-import { Schema, model } from "mongoose";
-import { ICategory } from "../types/admin/category.types";
+import { Schema, model, Document } from "mongoose";
 
-const categorySchema: Schema = new Schema<ICategory>(
-  {
-    name: {
-      type: String,
-      trim: true,
-      required: true,
-    },
-    logo: {
-      type: String,
-      trim: true,
-      required: false,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+export interface ICategory extends Document {
+  name: string;
+  logo: string;
+}
+
+const categorySchema = new Schema<ICategory>({
+  name: { type: String, required: true },
+  logo: { type: String, required: true },
+});
 
 export const Category = model<ICategory>("Category", categorySchema);

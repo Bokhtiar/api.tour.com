@@ -1,9 +1,32 @@
+const express = require("express");
+const path = require("path");
+const multer = require("multer");
+
+
 import { Types } from "mongoose";
 import { Category } from "../../models/category.models";
 import {
   ICategory,
   ICategoryCreateUpdate,
 } from "../../types/admin/category.types";
+
+
+/** create new resource */
+const createResource = async ({
+  documents,
+}: {
+  documents: ICategoryCreateUpdate;
+}): Promise<ICategory | null> => {
+  
+  const newCategory = new Category({
+    name: documents?.name,
+    logo: documents?.logo
+  });
+  return await newCategory.save();
+};
+
+
+
 
 /** count documents */
 const countAll = async (): Promise<number> => {
@@ -37,19 +60,6 @@ const findById = async ({
   _id: Types.ObjectId;
 }): Promise<ICategory | null> => {
   return await Category.findById(_id);
-};
-
-/** create new resource */
-const createResource = async ({
-  documents,
-}: {
-  documents: ICategoryCreateUpdate;
-}): Promise<ICategory | null> => {
-  const newCategory = new Category({
-    name: documents?.name,
-    logo: documents?.logo,
-  });
-  return await newCategory.save();
 };
 
 /** resource update */
