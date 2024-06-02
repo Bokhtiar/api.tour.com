@@ -12,10 +12,12 @@ import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
-import { Category, ICategory } from "../../models/category.models";
+
 const imagesDir = path.join(__dirname, "../../../public/uploads");
 
 /** list of resource */
+const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
+
 export const index = async (
   req: Request,
   res: Response,
@@ -34,6 +36,7 @@ export const index = async (
     } else {
       results = await CategoryServices.findAll({ limit, page });
     }
+
 
     res.status(200).json(
       await HttpSuccessResponse({

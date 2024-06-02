@@ -23,6 +23,7 @@ const path_1 = __importDefault(require("path"));
 const sharp_1 = __importDefault(require("sharp"));
 const imagesDir = path_1.default.join(__dirname, "../../../public/uploads");
 /** list of resource */
+const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
 const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let results = [];

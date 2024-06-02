@@ -7,6 +7,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+import path from "path";
 mongoose.set("strictQuery", true);
 
 dotenv.config();
@@ -21,7 +22,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 /** image upload */
 app.use(express.json());
-app.use("/images", express.static("public/uploads"));
+//app.use("/images", express.static("public/uploads"));
+// Directory where images are stored
+
+
+// Serve static files from the "public" directory
+app.use("/public", express.static(path.join(__dirname, "..", "public")));
 
 app.use("/api/v1", AppRouter);
 app.get("/", (req: Request, res: Response) => {
