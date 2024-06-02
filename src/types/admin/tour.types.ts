@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { Types, Document } from "mongoose";
 
 export interface ITour {
     _id: Types.ObjectId,
@@ -17,7 +17,7 @@ export interface ITour {
     status?: boolean,
 }
 
-export interface ITourCreateUpdate {
+export interface ITourCreateUpdate extends Document{
   title: string;
   location: string;
   apply_date: Date;
