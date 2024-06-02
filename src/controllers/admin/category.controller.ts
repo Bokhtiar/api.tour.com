@@ -15,9 +15,6 @@ import sharp from "sharp";
 
 const imagesDir = path.join(__dirname, "../../../public/uploads");
 
-/** list of resource */
-const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
-
 export const index = async (
   req: Request,
   res: Response,
@@ -36,7 +33,6 @@ export const index = async (
     } else {
       results = await CategoryServices.findAll({ limit, page });
     }
-
 
     res.status(200).json(
       await HttpSuccessResponse({
@@ -65,9 +61,12 @@ export const store = async (
     const imageBuffer = req.file.buffer;
 
     // Resize the image
+    // const resizedImageBuffer = await sharp(imageBuffer)
+    //   .resize(500, 500)
+    //   .jpeg({ quality: 80 })
+    //   .toBuffer();
     const resizedImageBuffer = await sharp(imageBuffer)
-      .resize(500, 500)
-      .jpeg({ quality: 80 })
+      .jpeg({ quality: 40, mozjpeg: true })
       .toBuffer();
 
     const filename = `${Date.now()}.jpg`;
@@ -127,9 +126,12 @@ export const update = async (
     const imageBuffer = req.file.buffer;
 
     // Resize the image
+    // const resizedImageBuffer = await sharp(imageBuffer)
+    //   .resize(500, 500)
+    //   .jpeg({ quality: 80 })
+    //   .toBuffer();
     const resizedImageBuffer = await sharp(imageBuffer)
-      .resize(500, 500)
-      .jpeg({ quality: 80 })
+      .jpeg({ quality: 40, mozjpeg: true })
       .toBuffer();
 
     const filename = `${Date.now()}.jpg`;

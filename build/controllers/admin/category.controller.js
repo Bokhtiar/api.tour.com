@@ -22,8 +22,6 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const sharp_1 = __importDefault(require("sharp"));
 const imagesDir = path_1.default.join(__dirname, "../../../public/uploads");
-/** list of resource */
-const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
 const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let results = [];
@@ -58,9 +56,12 @@ const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         const { name } = req.body;
         const imageBuffer = req.file.buffer;
         // Resize the image
+        // const resizedImageBuffer = await sharp(imageBuffer)
+        //   .resize(500, 500)
+        //   .jpeg({ quality: 80 })
+        //   .toBuffer();
         const resizedImageBuffer = yield (0, sharp_1.default)(imageBuffer)
-            .resize(500, 500)
-            .jpeg({ quality: 80 })
+            .jpeg({ quality: 40, mozjpeg: true })
             .toBuffer();
         const filename = `${Date.now()}.jpg`;
         const outputPath = path_1.default.join(imagesDir, filename);
@@ -109,9 +110,12 @@ const update = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         }
         const imageBuffer = req.file.buffer;
         // Resize the image
+        // const resizedImageBuffer = await sharp(imageBuffer)
+        //   .resize(500, 500)
+        //   .jpeg({ quality: 80 })
+        //   .toBuffer();
         const resizedImageBuffer = yield (0, sharp_1.default)(imageBuffer)
-            .resize(500, 500)
-            .jpeg({ quality: 80 })
+            .jpeg({ quality: 40, mozjpeg: true })
             .toBuffer();
         const filename = `${Date.now()}.jpg`;
         const outputPath = path_1.default.join(imagesDir, filename);
