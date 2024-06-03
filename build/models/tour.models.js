@@ -36,6 +36,7 @@ const tourSchema = new mongoose_1.Schema({
     category: {
         type: mongoose_1.Schema.Types.ObjectId,
         required: true,
+        ref: "Category",
     },
     is_refundable: {
         type: Boolean,
@@ -43,7 +44,7 @@ const tourSchema = new mongoose_1.Schema({
     },
     ratting: {
         type: Number,
-        default: 5
+        default: 5,
     },
     descirption: {
         type: String,
@@ -51,13 +52,13 @@ const tourSchema = new mongoose_1.Schema({
     },
     image: {
         type: String,
-        required: true
+        required: true,
     },
     status: {
         type: Boolean,
-        default: false
-    }
+        default: false,
+    },
 }, {
-    timestamps: true
+    timestamps: true,
 });
 exports.Tour = (0, mongoose_1.model)("Tour", tourSchema);

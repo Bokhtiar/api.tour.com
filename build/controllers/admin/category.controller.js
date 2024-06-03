@@ -17,10 +17,9 @@ const index_helper_1 = require("../../helpers/index.helper");
 const category_services_1 = require("../../services/admin/category.services");
 const pagination_helper_1 = require("../../helpers/pagination.helper");
 const mongoose_1 = require("mongoose");
-const crypto_1 = __importDefault(require("crypto"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
-const sharp_1 = __importDefault(require("sharp"));
+const fileUpload_helpers_1 = require("../../helpers/fileUpload.helpers");
 const imagesDir = path_1.default.join(__dirname, "../../../public/uploads");
 const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -55,17 +54,7 @@ const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         }
         const { name } = req.body;
         const imageBuffer = req.file.buffer;
-        // Resize the image
-        // const resizedImageBuffer = await sharp(imageBuffer)
-        //   .resize(500, 500)
-        //   .jpeg({ quality: 80 })
-        //   .toBuffer();
-        const resizedImageBuffer = yield (0, sharp_1.default)(imageBuffer)
-            .jpeg({ quality: 40, mozjpeg: true })
-            .toBuffer();
-        const filename = `${Date.now()}.jpg`;
-        const outputPath = path_1.default.join(imagesDir, filename);
-        fs_1.default.writeFileSync(outputPath, resizedImageBuffer);
+        const filename = yield (0, fileUpload_helpers_1.FileUpload)(imageBuffer);
         const documents = {
             name,
             logo: filename,
@@ -109,17 +98,6 @@ const update = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             return res.status(400).send("No file uploaded.");
         }
         const imageBuffer = req.file.buffer;
-        // Resize the image
-        // const resizedImageBuffer = await sharp(imageBuffer)
-        //   .resize(500, 500)
-        //   .jpeg({ quality: 80 })
-        //   .toBuffer();
-        const resizedImageBuffer = yield (0, sharp_1.default)(imageBuffer)
-            .jpeg({ quality: 40, mozjpeg: true })
-            .toBuffer();
-        const filename = `${Date.now()}.jpg`;
-        const outputPath = path_1.default.join(imagesDir, filename);
-        fs_1.default.writeFileSync(outputPath, resizedImageBuffer);
         // Fetch the existing category to get the current logo filename
         const existingCategory = yield category_services_1.CategoryServices.findOneByKey({ _id: id });
         if (!existingCategory) {
@@ -136,23 +114,23 @@ const update = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         // existing image delete
         let shouldDeleteOldFile = true;
         // Compare the existing file with the new file
-        if (existingCategory.logo) {
-            const oldImagePath = path_1.default.join(imagesDir, existingCategory.logo);
-            if (fs_1.default.existsSync(oldImagePath)) {
-                const oldImageBuffer = fs_1.default.readFileSync(oldImagePath);
-                const oldImageHash = crypto_1.default
-                    .createHash("md5")
-                    .update(oldImageBuffer)
-                    .digest("hex");
-                const newImageHash = crypto_1.default
-                    .createHash("md5")
-                    .update(resizedImageBuffer)
-                    .digest("hex");
-                if (oldImageHash === newImageHash) {
-                    shouldDeleteOldFile = false;
-                }
-            }
-        }
+        // if (existingCategory.logo) {
+        //   const oldImagePath = path.join(imagesDir, existingCategory.logo);
+        //   if (fs.existsSync(oldImagePath)) {
+        //     const oldImageBuffer = fs.readFileSync(oldImagePath);
+        //     const oldImageHash = crypto
+        //       .createHash("md5")
+        //       .update(oldImageBuffer)
+        //       .digest("hex");
+        //     const newImageHash = crypto
+        //       .createHash("md5")
+        //       .update(resizedImageBuffer)
+        //       .digest("hex");
+        //     if (oldImageHash === newImageHash) {
+        //       shouldDeleteOldFile = false;
+        //     }
+        //   }
+        // }
         // Delete the existing logo file if it exists and should be deleted
         if (shouldDeleteOldFile && existingCategory.logo) {
             const oldImagePath = path_1.default.join(imagesDir, existingCategory.logo);
@@ -161,7 +139,8 @@ const update = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             }
         }
         // Save the new image
-        fs_1.default.writeFileSync(outputPath, resizedImageBuffer);
+        // fs.writeFileSync(outputPath, resizedImageBuffer);
+        const filename = yield (0, fileUpload_helpers_1.FileUpload)(imageBuffer);
         /* check unique name */
         const existWithName = yield category_services_1.CategoryServices.findOneByKey({ name });
         if (existWithName && existWithName._id.toString() !== id) {

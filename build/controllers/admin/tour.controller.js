@@ -1,0 +1,99 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.show = exports.store = exports.index = void 0;
+const index_helper_1 = require("../../helpers/index.helper");
+const tour_services_1 = require("../../services/admin/tour.services");
+const pagination_helper_1 = require("../../helpers/pagination.helper");
+const mongoose_1 = require("mongoose");
+const fileUpload_helpers_1 = require("../../helpers/fileUpload.helpers");
+// import crypto from "crypto";
+// import fs from "fs";
+// import path from "path";
+// import sharp from "sharp";
+// const imagesDir = path.join(__dirname, "../../../public/uploads");
+/** index */
+const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let results = [];
+        const totalItems = yield tour_services_1.TourServices.countAll();
+        const { limit, page } = (0, pagination_helper_1.paginateQueryParams)(req.params);
+        const searchQuery = req.query.query;
+        if (searchQuery) {
+            results = yield tour_services_1.TourServices.searchByKey({
+                query: searchQuery.toString(),
+            });
+        }
+        else {
+            results = yield tour_services_1.TourServices.findAll({ limit, page });
+        }
+        res.status(200).json(yield (0, index_helper_1.HttpSuccessResponse)({
+            status: true,
+            data: results,
+            paginate: (0, pagination_helper_1.paginate)({ total_items: totalItems, page, limit }),
+        }));
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.index = index;
+/** store */
+const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!req.file) {
+            return res.status(400).send("No file uploaded.");
+        }
+        const { title, location, apply_date, end_apply_date, is_tour_done, days, max_people, category, is_refundable, ratting, descirption, status } = req.body;
+        const imageBuffer = req.file.buffer;
+        const filename = yield (0, fileUpload_helpers_1.FileUpload)(imageBuffer);
+        const documents = {
+            title: title,
+            location: location,
+            apply_date: apply_date,
+            end_apply_date: end_apply_date,
+            days: days,
+            max_people: max_people,
+            category: category,
+            ratting: ratting,
+            descirption: descirption,
+            image: filename,
+            is_refundable: is_refundable,
+            is_tour_done: is_tour_done,
+            status: status
+        };
+        const result = yield tour_services_1.TourServices.createResource({ documents: documents });
+        res.status(200).json(yield (0, index_helper_1.HttpSuccessResponse)({
+            status: true,
+            data: result,
+            message: 'Tour created successfully.'
+        }));
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.store = store;
+/** show */
+const show = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const result = yield tour_services_1.TourServices.findOneById({ _id: new mongoose_1.Types.ObjectId(id) });
+        res.status(200).json(yield (0, index_helper_1.HttpSuccessResponse)({
+            status: true,
+            data: result,
+        }));
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.show = show;

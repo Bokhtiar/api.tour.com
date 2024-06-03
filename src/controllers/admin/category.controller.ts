@@ -12,6 +12,7 @@ import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
+import { FileUpload } from "../../helpers/fileUpload.helpers";
 
 const imagesDir = path.join(__dirname, "../../../public/uploads");
 
@@ -60,19 +61,7 @@ export const store = async (
     const { name } = req.body;
     const imageBuffer = req.file.buffer;
 
-    // Resize the image
-    // const resizedImageBuffer = await sharp(imageBuffer)
-    //   .resize(500, 500)
-    //   .jpeg({ quality: 80 })
-    //   .toBuffer();
-    const resizedImageBuffer = await sharp(imageBuffer)
-      .jpeg({ quality: 40, mozjpeg: true })
-      .toBuffer();
-
-    const filename = `${Date.now()}.jpg`;
-    const outputPath = path.join(imagesDir, filename);
-    fs.writeFileSync(outputPath, resizedImageBuffer);
-
+    const filename = await FileUpload(imageBuffer)
     const documents: ICategoryCreateUpdate = {
       name,
       logo: filename,
@@ -124,19 +113,9 @@ export const update = async (
       return res.status(400).send("No file uploaded.");
     }
     const imageBuffer = req.file.buffer;
-
-    // Resize the image
-    // const resizedImageBuffer = await sharp(imageBuffer)
-    //   .resize(500, 500)
-    //   .jpeg({ quality: 80 })
-    //   .toBuffer();
-    const resizedImageBuffer = await sharp(imageBuffer)
-      .jpeg({ quality: 40, mozjpeg: true })
-      .toBuffer();
-
-    const filename = `${Date.now()}.jpg`;
-    const outputPath = path.join(imagesDir, filename);
-    fs.writeFileSync(outputPath, resizedImageBuffer);
+    
+    
+    
 
     // Fetch the existing category to get the current logo filename
     const existingCategory = await CategoryServices.findOneByKey({ _id: id });
@@ -157,24 +136,24 @@ export const update = async (
     // existing image delete
     let shouldDeleteOldFile = true;
     // Compare the existing file with the new file
-    if (existingCategory.logo) {
-      const oldImagePath = path.join(imagesDir, existingCategory.logo);
-      if (fs.existsSync(oldImagePath)) {
-        const oldImageBuffer = fs.readFileSync(oldImagePath);
-        const oldImageHash = crypto
-          .createHash("md5")
-          .update(oldImageBuffer)
-          .digest("hex");
-        const newImageHash = crypto
-          .createHash("md5")
-          .update(resizedImageBuffer)
-          .digest("hex");
+    // if (existingCategory.logo) {
+    //   const oldImagePath = path.join(imagesDir, existingCategory.logo);
+    //   if (fs.existsSync(oldImagePath)) {
+    //     const oldImageBuffer = fs.readFileSync(oldImagePath);
+    //     const oldImageHash = crypto
+    //       .createHash("md5")
+    //       .update(oldImageBuffer)
+    //       .digest("hex");
+    //     const newImageHash = crypto
+    //       .createHash("md5")
+    //       .update(resizedImageBuffer)
+    //       .digest("hex");
 
-        if (oldImageHash === newImageHash) {
-          shouldDeleteOldFile = false;
-        }
-      }
-    }
+    //     if (oldImageHash === newImageHash) {
+    //       shouldDeleteOldFile = false;
+    //     }
+    //   }
+    // }
 
     // Delete the existing logo file if it exists and should be deleted
     if (shouldDeleteOldFile && existingCategory.logo) {
@@ -185,7 +164,8 @@ export const update = async (
     }
 
     // Save the new image
-    fs.writeFileSync(outputPath, resizedImageBuffer);
+    // fs.writeFileSync(outputPath, resizedImageBuffer);
+    const filename = await FileUpload(imageBuffer);
 
     /* check unique name */
     const existWithName = await CategoryServices.findOneByKey({ name });

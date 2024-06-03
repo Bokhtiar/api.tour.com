@@ -25,9 +25,6 @@ const createResource = async ({
   return await newCategory.save();
 };
 
-
-
-
 /** count documents */
 const countAll = async (): Promise<number> => {
   return await Category.countDocuments();

@@ -1,5 +1,6 @@
 import {Types} from 'mongoose'
 
+
 export interface ICategory {
   _id: Types.ObjectId;
   name: string;
@@ -8,5 +9,5 @@ export interface ICategory {
 
 export interface ICategoryCreateUpdate {
   name: string;
-  logo: string;
+  logo: string
 }
