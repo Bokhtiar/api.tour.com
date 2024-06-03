@@ -1,5 +1,5 @@
 import { ICreateUpdateTourPrice } from '../types/admin/tourPrice.types'
-import {Schema, Types, model} from 'mongoose'
+import {Schema, model} from 'mongoose'
 
 const TourPriceSchema: Schema = new Schema<ICreateUpdateTourPrice> ({
     title: {
