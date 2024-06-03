@@ -1,8 +1,6 @@
-import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
-import {IFile} from '../types/admin/tour.types'
 const imagesDir = path.join(__dirname, "../../public/uploads");
 
 
@@ -23,3 +21,13 @@ export const FileUpload = async (params: any) => {
 
   return filename;
 };
+
+export const ExistFileDelete= async(data:any) => {
+  let shouldDeleteOldFile = true;
+    if (shouldDeleteOldFile && data) {
+      const oldImagePath = path.join(imagesDir, data);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+}

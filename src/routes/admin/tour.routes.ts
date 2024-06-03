@@ -15,3 +15,5 @@ adminTourRoute.post(
   tourController.store
 );
 
+adminTourRoute.put("/:id", upload.single("image"), tourController.update);
+

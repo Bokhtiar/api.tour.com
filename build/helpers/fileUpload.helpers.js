@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FileUpload = void 0;
+exports.ExistFileDelete = exports.FileUpload = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const sharp_1 = __importDefault(require("sharp"));
@@ -32,3 +32,13 @@ const FileUpload = (params) => __awaiter(void 0, void 0, void 0, function* () {
     return filename;
 });
 exports.FileUpload = FileUpload;
+const ExistFileDelete = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    let shouldDeleteOldFile = true;
+    if (shouldDeleteOldFile && data) {
+        const oldImagePath = path_1.default.join(imagesDir, data);
+        if (fs_1.default.existsSync(oldImagePath)) {
+            fs_1.default.unlinkSync(oldImagePath);
+        }
+    }
+});
+exports.ExistFileDelete = ExistFileDelete;

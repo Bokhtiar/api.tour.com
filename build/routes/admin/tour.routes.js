@@ -37,3 +37,4 @@ exports.adminTourRoute = (0, express_1.Router)();
 exports.adminTourRoute.get("/", tourController.index);
 exports.adminTourRoute.get("/:id", tourController.show);
 exports.adminTourRoute.post("/", upload.single("image"), tourController.store);
+exports.adminTourRoute.put("/:id", upload.single("image"), tourController.update);

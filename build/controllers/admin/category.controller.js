@@ -113,24 +113,6 @@ const update = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         }
         // existing image delete
         let shouldDeleteOldFile = true;
-        // Compare the existing file with the new file
-        // if (existingCategory.logo) {
-        //   const oldImagePath = path.join(imagesDir, existingCategory.logo);
-        //   if (fs.existsSync(oldImagePath)) {
-        //     const oldImageBuffer = fs.readFileSync(oldImagePath);
-        //     const oldImageHash = crypto
-        //       .createHash("md5")
-        //       .update(oldImageBuffer)
-        //       .digest("hex");
-        //     const newImageHash = crypto
-        //       .createHash("md5")
-        //       .update(resizedImageBuffer)
-        //       .digest("hex");
-        //     if (oldImageHash === newImageHash) {
-        //       shouldDeleteOldFile = false;
-        //     }
-        //   }
-        // }
         // Delete the existing logo file if it exists and should be deleted
         if (shouldDeleteOldFile && existingCategory.logo) {
             const oldImagePath = path_1.default.join(imagesDir, existingCategory.logo);
