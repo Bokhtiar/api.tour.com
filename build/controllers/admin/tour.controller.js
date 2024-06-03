@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.update = exports.show = exports.store = exports.index = void 0;
+exports.destory = exports.update = exports.show = exports.store = exports.index = void 0;
 const index_helper_1 = require("../../helpers/index.helper");
 const tour_services_1 = require("../../services/admin/tour.services");
 const pagination_helper_1 = require("../../helpers/pagination.helper");
@@ -149,3 +149,19 @@ const update = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.update = update;
+/** destroy */
+const destory = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const existTour = yield tour_services_1.TourServices.destoryResource({ _id: new mongoose_1.Types.ObjectId(id) });
+        (0, fileUpload_helpers_1.ExistFileDelete)(existTour === null || existTour === void 0 ? void 0 : existTour.image);
+        res.status(201).json(yield (0, index_helper_1.HttpSuccessResponse)({
+            status: true,
+            message: "Tour deleted successfully.",
+        }));
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.destory = destory;

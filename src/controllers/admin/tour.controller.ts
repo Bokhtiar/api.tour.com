@@ -51,6 +51,7 @@ export const store = async (
     if (!req.file) {
       return res.status(400).send("No file uploaded.");
     }
+    
     const {
       title,
       location,
@@ -202,3 +203,21 @@ export const update = async (
     next(error);
   }
 };
+
+
+/** destroy */
+export const destory = async(req:Request, res: Response, next: NextFunction) => {
+  try {
+    const {id} = req.params
+    const existTour = await TourServices.destoryResource({_id: new Types.ObjectId(id)})
+    ExistFileDelete(existTour?.image)
+     res.status(201).json(
+       await HttpSuccessResponse({
+         status: true,
+         message: "Tour deleted successfully.",
+       })
+     );
+  } catch (error:any) {
+    next(error)
+  }
+}

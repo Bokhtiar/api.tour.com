@@ -8,12 +8,7 @@ const upload = multer({ storage });
 
 export const adminTourRoute: Router = Router();
 adminTourRoute.get("/", tourController.index);
-adminTourRoute.get("/:id", tourController.show)
-adminTourRoute.post(
-  "/",
-  upload.single("image"),
-  tourController.store
-);
-
+adminTourRoute.get("/:id", tourController.show);
+adminTourRoute.post("/", upload.single("image"), tourController.store);
 adminTourRoute.put("/:id", upload.single("image"), tourController.update);
-
+adminTourRoute.delete("/:id", tourController.destory)

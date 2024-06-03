@@ -38,3 +38,4 @@ exports.adminTourRoute.get("/", tourController.index);
 exports.adminTourRoute.get("/:id", tourController.show);
 exports.adminTourRoute.post("/", upload.single("image"), tourController.store);
 exports.adminTourRoute.put("/:id", upload.single("image"), tourController.update);
+exports.adminTourRoute.delete("/:id", tourController.destory);
