@@ -59,6 +59,13 @@ const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             name,
             logo: filename,
         };
+        const isNameExist = yield category_services_1.CategoryServices.findOneByKey({ name: name });
+        if (isNameExist) {
+            return res.status(409).json({
+                status: false,
+                message: "Category name already exist.",
+            });
+        }
         const data = yield category_services_1.CategoryServices.createResource({
             documents: documents,
         });

@@ -28,7 +28,7 @@ export interface ITourModel extends Document {
   category: Types.ObjectId;
   is_refundable?: boolean;
   ratting?: number;
-  descirption?: string;
+  descirption: string;
   image: string;
   status?: boolean;
 }
@@ -44,7 +44,7 @@ export interface ITourCreateUpdate {
   category: Types.ObjectId;
   is_refundable?: boolean;
   ratting?: number;
-  descirption?: string;
+  descirption: string;
   image: string;
   status?: boolean;
 }

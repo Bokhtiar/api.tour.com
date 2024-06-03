@@ -67,6 +67,14 @@ export const store = async (
       logo: filename,
     };
 
+    const isNameExist = await CategoryServices.findOneByKey({ name: name });
+    if (isNameExist) {
+      return res.status(409).json({
+        status: false,
+        message: "Category name already exist.",
+      });
+    }
+
     const data = await CategoryServices.createResource({
       documents: documents,
     });
@@ -113,10 +121,7 @@ export const update = async (
       return res.status(400).send("No file uploaded.");
     }
     const imageBuffer = req.file.buffer;
-    
-    
-    
-
+  
     // Fetch the existing category to get the current logo filename
     const existingCategory = await CategoryServices.findOneByKey({ _id: id });
     if (!existingCategory) {

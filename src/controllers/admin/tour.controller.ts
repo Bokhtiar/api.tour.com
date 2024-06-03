@@ -67,6 +67,14 @@ export const store = async (
       status,
     } = req.body;
 
+    const isTitleExist = await TourServices.findOneByKey({ name: name });
+    if (isTitleExist) {
+      return res.status(409).json({
+        status: false,
+        message: "Tour title already exist.",
+      });
+    }
+
     const imageBuffer = req.file.buffer;
     const filename = await FileUpload(imageBuffer);
 

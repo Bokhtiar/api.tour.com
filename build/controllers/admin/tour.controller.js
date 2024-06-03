@@ -47,6 +47,13 @@ const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             return res.status(400).send("No file uploaded.");
         }
         const { title, location, apply_date, end_apply_date, is_tour_done, days, max_people, category, is_refundable, ratting, descirption, status, } = req.body;
+        const isTitleExist = yield tour_services_1.TourServices.findOneByKey({ name: name });
+        if (isTitleExist) {
+            return res.status(409).json({
+                status: false,
+                message: "Tour title already exist.",
+            });
+        }
         const imageBuffer = req.file.buffer;
         const filename = yield (0, fileUpload_helpers_1.FileUpload)(imageBuffer);
         const documents = {
