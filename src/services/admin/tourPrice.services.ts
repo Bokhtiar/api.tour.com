@@ -4,9 +4,9 @@ import {
   ICreateUpdateTourPrice,
   ITourPrice,
 } from "../../types/admin/tourPrice.types";
-
+ 
 /** count document */
-const countAll = async (): Promise<Number> => {
+const countAll = async (): Promise<number> => {
   return await TourPrice.countDocuments();
 };
 
