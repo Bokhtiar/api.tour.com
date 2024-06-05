@@ -54,3 +54,56 @@ export const show = async(req:Request, res: Response, next: NextFunction) => {
         next(error)
     }
 }
+
+/** isTourDone */
+export const isTourDone = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await UserTourService.findAllIsTourDone({isTourDone: false})
+        res.status(200).json(
+          await HttpSuccessResponse({
+            status: true,
+            data: result,
+            message: "Tour complete list"
+          })
+        );
+    } catch (error:any) {
+        next(error)
+    }
+}
+
+/** isTourRunning */
+export const isTourRunning = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await UserTourService.findAllIsTourRunning({isTourRunning: true})
+        res.status(200).json(
+          await HttpSuccessResponse({
+            status: true,
+            data: result,
+            message: "Tour running list"
+          })
+        );
+    } catch (error:any) {
+        next(error)
+    }
+}
+
+/** filter price */
+export const priceFilter = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const min = parseInt(req.query.min as string);
+    const max = parseInt(req.query.max as string);
+
+    if (isNaN(min) || isNaN(max)) {
+      return res.status(400).json({ error: "Invalid min or max value" });
+    }
+
+    const results = await UserTourService.searchByPriceFilter({ min, max });
+    res.json(results);
+  } catch (error: any) {
+    next(error);
+  }
+};
