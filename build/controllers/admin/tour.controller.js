@@ -18,10 +18,8 @@ const fileUpload_helpers_1 = require("../../helpers/fileUpload.helpers");
 const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let results = [];
-        console.log("requ", req.params);
         const totalItems = yield tour_services_1.TourServices.countAll();
         const { limit, page } = (0, pagination_helper_1.paginateQueryParams)(req.params);
-        console.log("limit", limit);
         const searchQuery = req.query.query;
         if (searchQuery) {
             results = yield tour_services_1.TourServices.searchByKey({

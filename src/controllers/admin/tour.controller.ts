@@ -13,15 +13,12 @@ export const index = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+) => { 
   try {
     let results = [];
-    console.log("requ", req.params);
-    
+
     const totalItems = await TourServices.countAll();
     const { limit, page } = paginateQueryParams(req.params);
-    console.log("limit", limit);
-    
     const searchQuery = req.query.query;
     
     if (searchQuery) {

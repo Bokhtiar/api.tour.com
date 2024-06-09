@@ -40,7 +40,6 @@ export const index = async (
       totalItems = await CategoryServices.countAll();
       results = await CategoryServices.findAll({ limit, page });
     }
-
     res.status(200).json(
       await HttpSuccessResponse({
         status: true,
