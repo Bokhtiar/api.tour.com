@@ -40,52 +40,66 @@ export const index = async (
 };
 
 /** show */
-export const show = async(req:Request, res: Response, next: NextFunction) => {
-    try {
-        const {id} = req.params
-        const result = await UserTourService.findOneById({_id: new Types.ObjectId(id)})
-         res.status(200).json(
-           await HttpSuccessResponse({
-             status: true,
-             data: result,
-           })
-         );
-    } catch (error:any) {
-        next(error)
-    }
-}
+export const show = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const result = await UserTourService.findOneById({
+      _id: new Types.ObjectId(id),
+    });
+    res.status(200).json(
+      await HttpSuccessResponse({
+        status: true,
+        data: result,
+      })
+    );
+  } catch (error: any) {
+    next(error);
+  }
+};
 
 /** isTourDone */
-export const isTourDone = async(req: Request, res: Response, next: NextFunction) => {
-    try {
-        const result = await UserTourService.findAllIsTourDone({isTourDone: false})
-        res.status(200).json(
-          await HttpSuccessResponse({
-            status: true,
-            data: result,
-            message: "Tour complete list"
-          })
-        );
-    } catch (error:any) {
-        next(error)
-    }
-}
+export const isTourDone = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const result = await UserTourService.findAllIsTourDone({
+      isTourDone: false,
+    });
+    res.status(200).json(
+      await HttpSuccessResponse({
+        status: true,
+        data: result,
+        message: "Tour complete list",
+      })
+    );
+  } catch (error: any) {
+    next(error);
+  }
+};
 
 /** isTourRunning */
-export const isTourRunning = async(req: Request, res: Response, next: NextFunction) => {
-    try {
-        const result = await UserTourService.findAllIsTourRunning({isTourRunning: true})
-        res.status(200).json(
-          await HttpSuccessResponse({
-            status: true,
-            data: result,
-            message: "Tour running list"
-          })
-        );
-    } catch (error:any) {
-        next(error)
-    }
-}
+export const isTourRunning = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const result = await UserTourService.findAllIsTourRunning({
+      isTourRunning: true,
+    });
+    res.status(200).json(
+      await HttpSuccessResponse({
+        status: true,
+        data: result,
+        message: "Tour running list",
+      })
+    );
+  } catch (error: any) {
+    next(error);
+  }
+};
 
 /** filter price */
 export const priceFilter = async (

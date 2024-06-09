@@ -5,6 +5,7 @@ import { adminCommentRouter } from "./admin/comment.routes";
 import { adminCategoryRoute } from "./admin/category.routes";
 import { adminTourPriceRouter } from "./admin/tourPrice.routes";
 import { adminPermission } from "../middleware/admin.permission.middleware";
+import { tourRouter } from "./user/tour.routes";
 
 export const AppRouter: Router = Router();
 AppRouter.use("/admin/auth", adminAuthRouter);
@@ -12,3 +13,6 @@ AppRouter.use("/admin/tour", adminPermission, adminTourRoute);
 AppRouter.use("/admin/comment", adminPermission, adminCommentRouter);
 AppRouter.use("/admin/category", adminPermission, adminCategoryRoute);
 AppRouter.use("/admin/tour-price", adminPermission, adminTourPriceRouter);
+
+/** user */
+AppRouter.use("/tour", tourRouter);

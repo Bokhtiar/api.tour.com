@@ -18,8 +18,10 @@ const fileUpload_helpers_1 = require("../../helpers/fileUpload.helpers");
 const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let results = [];
+        console.log("requ", req.params);
         const totalItems = yield tour_services_1.TourServices.countAll();
         const { limit, page } = (0, pagination_helper_1.paginateQueryParams)(req.params);
+        console.log("limit", limit);
         const searchQuery = req.query.query;
         if (searchQuery) {
             results = yield tour_services_1.TourServices.searchByKey({
@@ -29,6 +31,7 @@ const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         else {
             results = yield tour_services_1.TourServices.findAll({ limit, page });
         }
+        console.log("results", results);
         res.status(200).json(yield (0, index_helper_1.HttpSuccessResponse)({
             status: true,
             data: results,
@@ -47,7 +50,7 @@ const store = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             return res.status(400).send("No file uploaded.");
         }
         const { title, location, apply_date, end_apply_date, is_tour_done, days, max_people, category, is_refundable, ratting, descirption, status, } = req.body;
-        const isTitleExist = yield tour_services_1.TourServices.findOneByKey({ name: name });
+        const isTitleExist = yield tour_services_1.TourServices.findOneByKey({ title: title });
         if (isTitleExist) {
             return res.status(409).json({
                 status: false,
@@ -112,7 +115,7 @@ const update = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
                 status: false,
                 errors: [
                     {
-                        field: "Name",
+                        field: "Title",
                         message: "Tour title already exists.",
                     },
                 ],

@@ -24,15 +24,21 @@ const imagesDir = path_1.default.join(__dirname, "../../../public/uploads");
 const index = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let results = [];
-        const totalItems = yield category_services_1.CategoryServices.countAll();
+        let totalItems = [];
         const { limit, page } = (0, pagination_helper_1.paginateQueryParams)(req.query);
         const searchQuery = req.query.query;
         if (searchQuery) {
+            totalItems = yield category_services_1.CategoryServices.countSearchAll({
+                query: searchQuery.toString(),
+            });
             results = yield category_services_1.CategoryServices.searchByKey({
                 query: searchQuery.toString(),
+                limit,
+                page,
             });
         }
         else {
+            totalItems = yield category_services_1.CategoryServices.countAll();
             results = yield category_services_1.CategoryServices.findAll({ limit, page });
         }
         res.status(200).json(yield (0, index_helper_1.HttpSuccessResponse)({

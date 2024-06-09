@@ -44,7 +44,9 @@ exports.index = index;
 const show = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const result = yield tour_services_1.UserTourService.findOneById({ _id: new mongoose_1.Types.ObjectId(id) });
+        const result = yield tour_services_1.UserTourService.findOneById({
+            _id: new mongoose_1.Types.ObjectId(id),
+        });
         res.status(200).json(yield (0, index_helper_1.HttpSuccessResponse)({
             status: true,
             data: result,
@@ -58,11 +60,13 @@ exports.show = show;
 /** isTourDone */
 const isTourDone = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield tour_services_1.UserTourService.findAllIsTourDone({ isTourDone: false });
+        const result = yield tour_services_1.UserTourService.findAllIsTourDone({
+            isTourDone: false,
+        });
         res.status(200).json(yield (0, index_helper_1.HttpSuccessResponse)({
             status: true,
             data: result,
-            message: "Tour complete list"
+            message: "Tour complete list",
         }));
     }
     catch (error) {
@@ -73,11 +77,13 @@ exports.isTourDone = isTourDone;
 /** isTourRunning */
 const isTourRunning = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield tour_services_1.UserTourService.findAllIsTourRunning({ isTourRunning: true });
+        const result = yield tour_services_1.UserTourService.findAllIsTourRunning({
+            isTourRunning: true,
+        });
         res.status(200).json(yield (0, index_helper_1.HttpSuccessResponse)({
             status: true,
             data: result,
-            message: "Tour running list"
+            message: "Tour running list",
         }));
     }
     catch (error) {

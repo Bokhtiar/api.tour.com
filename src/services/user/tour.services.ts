@@ -28,7 +28,7 @@ const findOneById = async ({
 }: {
   _id: Types.ObjectId;
 }): Promise<ITour | null> => {
-  return await Tour.findById({ _id }).populate("Category", "name");
+  return await Tour.findById({ _id }).populate("category", "name");
 };
 
 /** tour done */

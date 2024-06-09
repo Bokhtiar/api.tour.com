@@ -16,11 +16,14 @@ export const index = async (
 ) => {
   try {
     let results = [];
-
+    console.log("requ", req.params);
+    
     const totalItems = await TourServices.countAll();
     const { limit, page } = paginateQueryParams(req.params);
+    console.log("limit", limit);
+    
     const searchQuery = req.query.query;
-
+    
     if (searchQuery) {
       results = await TourServices.searchByKey({
         query: searchQuery.toString(),
@@ -28,6 +31,8 @@ export const index = async (
     } else {
       results = await TourServices.findAll({ limit, page });
     }
+    console.log("results", results);
+    
 
     res.status(200).json(
       await HttpSuccessResponse({
@@ -67,7 +72,7 @@ export const store = async (
       status,
     } = req.body;
 
-    const isTitleExist = await TourServices.findOneByKey({ name: name });
+    const isTitleExist = await TourServices.findOneByKey({ title: title });
     if (isTitleExist) {
       return res.status(409).json({
         status: false,
@@ -158,7 +163,7 @@ export const update = async (
           status: false,
           errors: [
             {
-              field: "Name",
+              field: "Title",
               message: "Tour title already exists.",
             },
           ],

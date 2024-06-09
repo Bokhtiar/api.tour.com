@@ -22,7 +22,15 @@ const createResource = ({ documents, }) => __awaiter(void 0, void 0, void 0, fun
     });
     return yield newCategory.save();
 });
-/** count documents */
+/** count documents search */
+const countSearchAll = ({ query }) => __awaiter(void 0, void 0, void 0, function* () {
+    const queryRegExp = new RegExp(query, "i");
+    const count = yield category_models_1.Category.countDocuments({
+        $or: [{ name: queryRegExp }],
+    });
+    return count;
+});
+/** count all */
 const countAll = () => __awaiter(void 0, void 0, void 0, function* () {
     return yield category_models_1.Category.countDocuments();
 });
@@ -54,11 +62,15 @@ const destoryResource = ({ _id }) => __awaiter(void 0, void 0, void 0, function*
     return yield category_models_1.Category.findByIdAndRemove(_id);
 });
 /* Search by key */
-const searchByKey = ({ query, }) => __awaiter(void 0, void 0, void 0, function* () {
+const searchByKey = ({ query, page = 1, limit = 10, }) => __awaiter(void 0, void 0, void 0, function* () {
     const queryRegExp = new RegExp(query, "i");
     return yield category_models_1.Category.find({
         $or: [{ name: queryRegExp }],
-    });
+    })
+        .sort({ _id: -1 }) // Sort results by _id in descending order
+        .skip((page - 1) * limit) // Skip the appropriate number of results for pagination
+        .limit(limit) // Limit the number of results returned
+        .exec(); // Execute the query
 });
 exports.CategoryServices = {
     findAll,
@@ -66,6 +78,7 @@ exports.CategoryServices = {
     findById,
     searchByKey,
     findOneByKey,
+    countSearchAll,
     createResource,
     updateResource,
     destoryResource,

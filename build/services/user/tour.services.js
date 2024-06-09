@@ -25,7 +25,7 @@ const findAll = ({ limit, page, }) => __awaiter(void 0, void 0, void 0, function
 });
 /** findOneById */
 const findOneById = ({ _id, }) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield tour_models_1.Tour.findById({ _id }).populate("Category", "name");
+    return yield tour_models_1.Tour.findById({ _id }).populate("category", "name");
 });
 /** tour done */
 const findAllIsTourDone = ({ isTourDone, }) => __awaiter(void 0, void 0, void 0, function* () {

@@ -25,7 +25,16 @@ const createResource = async ({
   return await newCategory.save();
 };
 
-/** count documents */
+/** count documents search */
+const countSearchAll = async ({ query }: { query: string }): Promise<number> => {
+  const queryRegExp = new RegExp(query, "i");
+  const count = await Category.countDocuments({
+    $or: [{ name: queryRegExp }],
+  });
+  return count;
+};
+
+/** count all */
 const countAll = async (): Promise<number> => {
   return await Category.countDocuments();
 };
@@ -81,13 +90,21 @@ const destoryResource = async ({ _id }: { _id: Types.ObjectId }) => {
 /* Search by key */
 const searchByKey = async ({
   query,
+  page = 1,
+  limit = 10,
 }: {
   query: string;
+  page?: number;
+  limit?: number;
 }): Promise<ICategory[] | []> => {
   const queryRegExp = new RegExp(query, "i");
   return await Category.find({
     $or: [{ name: queryRegExp }],
-  });
+  })
+    .sort({ _id: -1 }) // Sort results by _id in descending order
+    .skip((page - 1) * limit) // Skip the appropriate number of results for pagination
+    .limit(limit) // Limit the number of results returned
+    .exec(); // Execute the query
 };
 
 export const CategoryServices = {
@@ -96,6 +113,7 @@ export const CategoryServices = {
   findById,
   searchByKey,
   findOneByKey,
+  countSearchAll,
   createResource,
   updateResource,
   destoryResource,

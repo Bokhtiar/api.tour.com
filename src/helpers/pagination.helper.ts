@@ -15,19 +15,28 @@ const prevPage = (page: number) => {
 };
 
 export const paginateQueryParams = (data: PaginationQueryType) => {
-  let limit: number = 10;
-  let page: number = 1;
+
+  
+  let limit: number = data?.limit ?? 10;
+  let page: number = data?.page ?? 1;
+
+  console.log("limit", limit);
+  console.log("page", page);
+  
+  
 
   if (data.page) page = data.page;
-  if (data.page && data.page <= 0) page = 1;
+  if (data.page && data.page <= 0) page = data?.page;
 
   if (data.limit) limit = data.limit;
-  if (data.limit && data.limit < 10) limit = 10;
+  if (data.limit && data.limit < data?.limit) limit = data?.limit;
 
   return { limit, page };
 };
 
 export const paginate = (data: PaginateType) => {
+  console.log("paginate", data);
+  
   const page = Number(data.page);
   const limit = Number(data.limit);
   const totalItems = Number(data.total_items);

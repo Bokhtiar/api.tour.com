@@ -8,10 +8,8 @@ import { paginate, paginateQueryParams } from "../../helpers/pagination.helper";
 import { ICategoryCreateUpdate } from "../../types/admin/category.types";
 import { Types } from "mongoose";
 
-import crypto from "crypto";
 import fs from "fs";
 import path from "path";
-import sharp from "sharp";
 import { FileUpload } from "../../helpers/fileUpload.helpers";
 
 const imagesDir = path.join(__dirname, "../../../public/uploads");
@@ -23,15 +21,23 @@ export const index = async (
 ) => {
   try {
     let results: any = [];
-    const totalItems = await CategoryServices.countAll();
+    let totalItems: any = [];
+
     const { limit, page } = paginateQueryParams(req.query);
+
     const searchQuery = req.query.query;
 
     if (searchQuery) {
-      results = await CategoryServices.searchByKey({
+      totalItems = await CategoryServices.countSearchAll({
         query: searchQuery.toString(),
       });
+      results = await CategoryServices.searchByKey({
+        query: searchQuery.toString(),
+        limit,
+        page,
+      });
     } else {
+      totalItems = await CategoryServices.countAll();
       results = await CategoryServices.findAll({ limit, page });
     }
 
@@ -61,7 +67,7 @@ export const store = async (
     const { name } = req.body;
     const imageBuffer = req.file.buffer;
 
-    const filename = await FileUpload(imageBuffer)
+    const filename = await FileUpload(imageBuffer);
     const documents: ICategoryCreateUpdate = {
       name,
       logo: filename,
@@ -121,7 +127,7 @@ export const update = async (
       return res.status(400).send("No file uploaded.");
     }
     const imageBuffer = req.file.buffer;
-  
+
     // Fetch the existing category to get the current logo filename
     const existingCategory = await CategoryServices.findOneByKey({ _id: id });
     if (!existingCategory) {
